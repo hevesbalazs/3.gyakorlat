@@ -55,5 +55,12 @@ namespace UserMaintenance
 
             }
         }
+        
+        private void btnDelete_Click(object sender, EventArgs e)
+        {
+            string ListBoxValue;
+            ListBoxValue = listUsers.SelectedItem.ToString();
+            MessageBox.Show(ListBoxValue);
+        }
     }
 }
