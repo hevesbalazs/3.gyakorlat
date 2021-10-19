@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,14 +17,14 @@ namespace VAR_Calculator
         PortfolioEntities context = new PortfolioEntities();
         List<PortfolioItem> Portfolio = new List<PortfolioItem>();
         List<Tick> Ticks;
-
+        List<decimal> Nyereségek = new List<decimal>();
         public Form1()
         {
             InitializeComponent();
             Ticks = context.Ticks.ToList();
             dataGridView1.DataSource = Ticks;
             CreatePortfolio();
-            List<decimal> Nyereségek = new List<decimal>();
+            
             int intervalum = 30;
             DateTime kezdőDátum = (from x in Ticks select x.TradingDay).Min();
             DateTime záróDátum = new DateTime(2016, 12, 30);
@@ -65,6 +66,26 @@ namespace VAR_Calculator
                 value += (decimal)last.Price * item.Volume;
             }
             return value;
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog saveFile = new SaveFileDialog();
+            saveFile.FileName = "Nyereségek.txt";
+            if (saveFile.ShowDialog()==DialogResult.OK)
+            {
+                int elemszam = 1;
+                using (StreamWriter writer = new StreamWriter(saveFile.OpenFile()))
+                {
+                    writer.WriteLine("Időszak Nyereség");
+                    foreach (var x in Nyereségek)
+                    {
+                        writer.WriteLine(elemszam.ToString()+". "+x.ToString());
+                        elemszam++;
+                    }
+                }
+
+            }
         }
     }
 }
