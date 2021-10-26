@@ -19,12 +19,35 @@ namespace ArfolyamLekerdezes
     public partial class Form1 : Form
     {
         BindingList<RateData> Rates = new BindingList<RateData>();
-        
-                
+        BindingList<string> Currencies = new BindingList<string>();
+
         public Form1()
         {
             InitializeComponent();
+            comboBox1.DataSource = Currencies;
+            GetCurrencies();
             RefreshData();            
+        }
+
+        private void GetCurrencies()
+        {
+            var mnbService = new MNBArfolyamServiceSoapClient();
+            var request = new GetCurrenciesRequestBody();
+            var response = mnbService.GetCurrencies(request);
+            var result = response.GetCurrenciesResult;
+
+            XmlDocument xml = new XmlDocument();
+            xml.LoadXml(result);
+            Console.WriteLine(result);
+            int szam = 0;
+            foreach (XmlElement item in xml.DocumentElement)
+            {
+                //var currency = item.GetAttribute("curr");
+                //Currencies.Add(currency);
+                szam++;
+            }
+            Console.WriteLine(Currencies.Count);
+            Console.WriteLine(szam.ToString());
         }
 
         private void RefreshData()
@@ -91,7 +114,7 @@ namespace ArfolyamLekerdezes
 
             var response = mnbService.GetExchangeRates(request);
 
-            var result = response.GetExchangeRatesResult;
+            var result = response.GetExchangeRatesResult;           
             return result.ToString();
         }
 
