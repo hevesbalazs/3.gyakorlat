@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using ArfolyamLekerdezes.MnbServiceReference;
 using ArfolyamLekerdezes.Entities;
+using System.Xml;
 
 namespace ArfolyamLekerdezes
 {
@@ -23,9 +24,31 @@ namespace ArfolyamLekerdezes
             InitializeComponent();
             CallWebservice();
             dataGridView1.DataSource = Rates;
+            ProcessXml();
         }
 
-        private void CallWebservice()
+        private void ProcessXml()
+        {
+            XmlDocument xml = new XmlDocument();
+            xml.LoadXml(CallWebservice());
+
+            foreach (XmlElement item in xml.DocumentElement)
+            {
+                var Rate = new RateData();
+                Rate.Date = DateTime.Parse(item.GetAttribute("date"));
+
+                var childElement = (XmlElement)item.ChildNodes[0];
+                Rate.Currency = childElement.GetAttribute("curr");
+
+                var unit = decimal.Parse(childElement.GetAttribute("unit"));
+                var value = decimal.Parse(childElement.InnerText);
+                if (unit != 0) Rate.Value = value / unit;
+
+                Rates.Add(Rate);
+            }
+        }
+
+        private string CallWebservice()
         {
             var mnbService = new MNBArfolyamServiceSoapClient();
 
@@ -38,7 +61,8 @@ namespace ArfolyamLekerdezes
 
             var response = mnbService.GetExchangeRates(request);
 
-            var result = response.GetExchangeRatesResult;           
+            var result = response.GetExchangeRatesResult;
+            return result.ToString();
         }
     }
 }
