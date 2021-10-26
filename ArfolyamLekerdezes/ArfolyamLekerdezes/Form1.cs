@@ -8,16 +8,21 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ArfolyamLekerdezes.MnbServiceReference;
+using ArfolyamLekerdezes.Entities;
 
 namespace ArfolyamLekerdezes
 {
     
+    
     public partial class Form1 : Form
     {
+        BindingList<RateData> Rates = new BindingList<RateData>();
+                
         public Form1()
         {
             InitializeComponent();
             CallWebservice();
+            dataGridView1.DataSource = Rates;
         }
 
         private void CallWebservice()
