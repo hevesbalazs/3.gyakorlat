@@ -19,10 +19,17 @@ namespace ArfolyamLekerdezes
     public partial class Form1 : Form
     {
         BindingList<RateData> Rates = new BindingList<RateData>();
+        
                 
         public Form1()
         {
             InitializeComponent();
+            RefreshData();            
+        }
+
+        private void RefreshData()
+        {
+            Rates.Clear();
             CallWebservice();
             dataGridView1.DataSource = Rates;
             ProcessXml();
@@ -75,14 +82,32 @@ namespace ArfolyamLekerdezes
             var request = new GetExchangeRatesRequestBody()
             {
                 currencyNames = "EUR",
-                startDate = "2020-01-01",
-                endDate = "2020-06-30"
+                //currencyNames = comboBox1.SelectedItem.ToString(),
+                // startDate = "2020-01-01",
+                startDate = dateTimePicker1.Value.ToString(),
+                // endDate = "2020-06-30"
+                endDate = dateTimePicker2.Value.ToString()
             };
 
             var response = mnbService.GetExchangeRates(request);
 
             var result = response.GetExchangeRatesResult;
             return result.ToString();
+        }
+
+        private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
+        {
+            RefreshData();
+        }
+
+        private void dateTimePicker2_ValueChanged(object sender, EventArgs e)
+        {
+            RefreshData();            
+        }
+
+        public void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            RefreshData();           
         }
     }
 }
