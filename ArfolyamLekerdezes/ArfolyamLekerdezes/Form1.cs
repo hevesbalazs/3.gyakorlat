@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using ArfolyamLekerdezes.MnbServiceReference;
 using ArfolyamLekerdezes.Entities;
 using System.Xml;
+using System.Windows.Forms.DataVisualization.Charting;
 
 namespace ArfolyamLekerdezes
 {
@@ -25,6 +26,25 @@ namespace ArfolyamLekerdezes
             CallWebservice();
             dataGridView1.DataSource = Rates;
             ProcessXml();
+            CreateChart();
+        }
+
+        private void CreateChart()
+        {
+            chartRateData.DataSource = Rates;
+            var elsoelem = chartRateData.Series[0];
+            elsoelem.ChartType = SeriesChartType.Line;
+            elsoelem.XValueMember = "Date";
+            elsoelem.YValueMembers = "Value";
+            elsoelem.BorderWidth = 2;
+
+            var legend = chartRateData.Legends[0];
+            legend.Enabled = false;
+
+            var chartArea = chartRateData.ChartAreas[0];
+            chartArea.AxisX.MajorGrid.Enabled = false;
+            chartArea.AxisY.MajorGrid.Enabled = false;
+            chartArea.AxisY.IsStartedFromZero = false;
         }
 
         private void ProcessXml()
