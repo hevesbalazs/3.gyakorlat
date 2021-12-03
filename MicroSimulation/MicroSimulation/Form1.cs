@@ -17,13 +17,15 @@ namespace MicroSimulation
         List<Person> Population = new List<Person>();
         List<BirthProbability> BirthProbabilities = new List<BirthProbability>();
         List<DeathProbability> DeathProbabilities = new List<DeathProbability>();
-
+        Random rng = new Random(1234);
+        
         public Form1()
         {
             InitializeComponent();
             Population = GetPopulation(@"C:\Temp\nép.csv");
             BirthProbabilities = GetBirthProbabilities(@"C:\Temp\születés.csv");
             DeathProbabilities = GetDeathProbabilities(@"C:\Temp\halál.csv");
+            
         }
 
         public List<Person> GetPopulation(string csvpath)
@@ -78,8 +80,8 @@ namespace MicroSimulation
                     var line = sr.ReadLine().Split(';');
                     DeathProbabilities.Add(new DeathProbability()
                     {
-                        Age = int.Parse(line[0]),
-                        Gender = (Gender)Enum.Parse(typeof(Gender), line[1]),
+                        Age = int.Parse(line[1]),
+                        Gender = (Gender)Enum.Parse(typeof(Gender), line[0]),
                         ChanceofDeath = double.Parse(line[2])
                     });
                 }
